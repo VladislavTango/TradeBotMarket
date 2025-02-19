@@ -2,8 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:TradeBotMarket"
-             StartupUri="Views/Windows/MainWindow.xaml">
+             xmlns:s="clr-namespace:TradeBotMarket.Views.Pages"
+             xmlns:k="clr-namespace:TradeBotMarket.ViewModels">
     <Application.Resources>
-         
+        <DataTemplate DataType="{x:Type k:Page1ViewModel}">
+            <s:Page1/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type k:Page2ViewModel}">
+            <s:Page2/>
+        </DataTemplate>
     </Application.Resources>
 </Application>

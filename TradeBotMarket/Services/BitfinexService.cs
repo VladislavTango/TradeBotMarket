@@ -42,43 +42,8 @@ namespace TradeBotMarket.Services
         {
             string url = pair.Length<6 ? $"https://api-pub.bitfinex.com/v2/ticker/t{pair}" : $"https://api-pub.bitfinex.com/v2/ticker/f{pair}";
             var response = await _httpClient.GetStringAsync(url);
-            var rawTicker = JsonSerializer.Deserialize<List<List<object>>>(response);
-            var ticker = new Ticker();
-            if (rawTicker.Count > 10)
-            {
-                ticker.FRR = Convert.ToDecimal(rawTicker[0]);
-                ticker.Bid = Convert.ToDecimal(rawTicker[1]);
-                ticker.BidPeriod = Convert.ToInt32(rawTicker[2]);
-                ticker.BidSize = Convert.ToDecimal(rawTicker[3]);
-                ticker.Ask = Convert.ToDecimal(rawTicker[4]);
-                ticker.AskPeriod = Convert.ToInt32(rawTicker[5]);
-                ticker.AskSize = Convert.ToDecimal(rawTicker[6]);
-                ticker.DailyChange = Convert.ToDecimal(rawTicker[7]);
-                ticker.DailyChangePerc = Convert.ToDecimal(rawTicker[8]);
-                ticker.LastPrice = Convert.ToDecimal(rawTicker[9]);
-                ticker.Volume = Convert.ToDecimal(rawTicker[10]);
-                ticker.High = Convert.ToDecimal(rawTicker[11]);
-                ticker.Low = Convert.ToDecimal(rawTicker[12]);
-
-                if (rawTicker.Count > 15 && rawTicker[15] != null)
-                {
-                    ticker.FRRAmountAvailable = Convert.ToDecimal(rawTicker[15]);
-                }
-            }
-            else if (rawTicker.Count == 10)
-            {
-                ticker.Bid = Convert.ToDecimal(rawTicker[0]);
-                ticker.BidSize = Convert.ToDecimal(rawTicker[1]);
-                ticker.Ask = Convert.ToDecimal(rawTicker[2]);
-                ticker.AskSize = Convert.ToDecimal(rawTicker[3]);
-                ticker.DailyChange = Convert.ToDecimal(rawTicker[4]);
-                ticker.DailyChangePerc = Convert.ToDecimal(rawTicker[5]);
-                ticker.LastPrice = Convert.ToDecimal(rawTicker[6]);
-                ticker.Volume = Convert.ToDecimal(rawTicker[7]);
-                ticker.High = Convert.ToDecimal(rawTicker[8]);
-                ticker.Low = Convert.ToDecimal(rawTicker[9]);
-            }
-            return ticker;
+            var rawTicker = JsonSerializer.Deserialize<List<object>>(response);
+            return _mapper.Map<List<object>, Ticker>(rawTicker);
         }
 
         public void SubscribeCandles(string pair, int periodInSec, DateTimeOffset? from = null, DateTimeOffset? to = null, long? count = 0)
