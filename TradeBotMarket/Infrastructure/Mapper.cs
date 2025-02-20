@@ -3,9 +3,9 @@ using TradeBotMarket.Models;
 
 namespace TradeBotMarket.Infrastructure
 {
-    public class Mapper : Profile
+    public class MapperProfile : Profile
     {
-        public Mapper() 
+        public MapperProfile() 
         {
             #region маппинг GetTrades(bitfinex) в Trade
             CreateMap<List<object>, Trade>()

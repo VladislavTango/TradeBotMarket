@@ -4,11 +4,45 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TradeBotMarket.Views.Pages"
+      xmlns:materials="clr-namespace:TradeBotMarket.ViewModels"
+      
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Page1">
 
+    <Page.DataContext>
+        <materials:Page1ViewModel/>
+    </Page.DataContext>
+
     <Grid>
-        <TextBlock Text="This is Page 1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="8*" />
+        </Grid.ColumnDefinitions>
+        <Expander Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left"  FontSize="20" Header="Pair">
+            <ListBox SelectedValue="{Binding Pair, Mode=TwoWay}" SelectedValuePath="Content">
+                <ListBoxItem Content="BTCUSD"></ListBoxItem>
+                <ListBoxItem Content="ETHUSD"></ListBoxItem>
+                <ListBoxItem Content="XRPUSD"></ListBoxItem>
+                <ListBoxItem Content="LTCUSD"></ListBoxItem>
+                <ListBoxItem Content="ETHBTC"></ListBoxItem>
+                <ListBoxItem Content="XRPBTC"></ListBoxItem>
+                <ListBoxItem Content="LTCBTC"></ListBoxItem>
+                <ListBoxItem Content="BTCUSD"></ListBoxItem>
+                <ListBoxItem Content="ETHUSD"></ListBoxItem>
+                <ListBoxItem Content="XRPUSD"></ListBoxItem>
+                <ListBoxItem Content="LTCUSD"></ListBoxItem>
+            </ListBox>
+        </Expander>
+        <DataGrid Grid.Column="1" ItemsSource="{Binding Trades , UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="0" AutoGenerateColumns="False" HeadersVisibility="All">
+            <DataGrid.Columns > 
+                <DataGridTextColumn Width="1*" Header="Trade ID" Binding="{Binding Id}" />
+                <DataGridTextColumn Width="1*" Header="Pair" Binding="{Binding Pair}" />
+                <DataGridTextColumn Width="1*" Header="Price" Binding="{Binding Price}" />
+                <DataGridTextColumn Width="1*" Header="Amount" Binding="{Binding Amount}" />
+                <DataGridTextColumn Width="1*" Header="Side" Binding="{Binding Side}" />
+                <DataGridTextColumn Width="1*" Header="Time" Binding="{Binding Time}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Page>
