@@ -23,22 +23,23 @@ namespace TradeBotMarket.Services
         public event Action<Trade> NewSellTrade;
         public event Action<Candle> CandleSeriesProcessing;
 
-        public async Task<IEnumerable<Candle>> GetCandleSeriesAsync(string pair, int periodInSec, DateTimeOffset? from, DateTimeOffset? to = null, long? count = 0)
+        public async Task<IEnumerable<Candle>> GetCandleSeriesAsync(string pair, string period, DateTimeOffset? from, DateTimeOffset? to = null, long? count = 0)
         {
             var start = from != null ? $"start={from.Value.ToUnixTimeMilliseconds()}" : "";
             var end = to != null ? $"end={to.Value.ToUnixTimeMilliseconds()}" : "";
             var limit = count > 0 ? $"limit={count}" : "";
             var query = string.Join("&", new[] { start, end, limit }.Where(s => !string.IsNullOrEmpty(s)));
-            var url = $"https://api-pub.bitfinex.com/v2/candles/trade:{periodInSec}s:{pair}/hist{(query.Length > 0 ? "?" + query : "")}";
-            
+            var encodedPeriod = Uri.EscapeDataString($"trade:{period}:t{pair}");
+
+            var url = $"https://api-pub.bitfinex.com/v2/candles/{encodedPeriod}/hist{(query.Length > 0 ? "?" + query : "")}";
+
             var options = new JsonSerializerOptions
             {
-                Converters = { new BitfinexCandleConverter() }
+                Converters = { new BitfinexCandleConverter(pair) }
             };
 
             var candles = await _httpClient.GetFromJsonAsync<List<Candle>>(url, options);
 
-            candles?.ForEach(x => x.Pair = pair);
 
             return candles;
         }
@@ -49,16 +50,10 @@ namespace TradeBotMarket.Services
 
             var options = new JsonSerializerOptions
             {
-                Converters = { new BitfinexTradeConverter() }
+                Converters = { new BitfinexTradeConverter(pair) }
             };
 
             var trades = await _httpClient.GetFromJsonAsync<List<Trade>>(url, options);
-
-            trades?.ForEach(x =>
-            {
-                x.Pair = pair;
-                x.Amount = Math.Abs(x.Amount);
-            });
 
             return trades;
         }

@@ -17,9 +17,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="8*" />
+            <ColumnDefinition Width="6*" />
         </Grid.ColumnDefinitions>
-        <Expander Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left"  FontSize="20" Header="Pair">
+        <Expander Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Header="Pair">
             <ListBox SelectedValue="{Binding Pair, Mode=TwoWay}" SelectedValuePath="Content">
                 <ListBoxItem Content="BTCUSD"></ListBoxItem>
                 <ListBoxItem Content="ETHUSD"></ListBoxItem>

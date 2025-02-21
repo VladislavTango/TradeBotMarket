@@ -1,8 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Net.Http;
-using System.Threading.Tasks;
-using AutoMapper;
-using TradeBotMarket.Infrastructure;
 using TradeBotMarket.Models;
 using TradeBotMarket.Services;
 using TradeBotMarket.ViewModels.Base;
@@ -11,6 +8,7 @@ namespace TradeBotMarket.ViewModels
 {
     public class Page1ViewModel : ViewModel
     {
+        private static readonly HttpClient _httpClient = new HttpClient();
         private string _Title = "TradeBotMarket";
         public string Title
         {
@@ -40,8 +38,7 @@ namespace TradeBotMarket.ViewModels
 
         private async Task FillTable()
         {
-            HttpClient httpClient = new();
-            BitfinexService _bitfinexService = new(httpClient);
+            BitfinexService _bitfinexService = new(_httpClient);
             Trades = new ObservableCollection<Trade>(await _bitfinexService.GetNewTradesAsync(_pair, 125));
         }
     }

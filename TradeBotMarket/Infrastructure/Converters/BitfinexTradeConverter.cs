@@ -6,20 +6,27 @@ namespace TradeBotMarket.Infrastructure.Converters
 {
     public class BitfinexTradeConverter : JsonConverter<Trade>
     {
+        private readonly string _pair;
+
+        public BitfinexTradeConverter(string pair)
+        {
+            _pair = pair;
+        }
         public override Trade Read(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options)
         {
-            var elements = JsonSerializer.Deserialize<List<JsonElement>>(ref reader);
+            var elements = JsonSerializer.Deserialize<List<JsonElement>>(ref reader , options);
 
             return new Trade
             {
                 Id = elements[0].GetInt64().ToString(),
                 Time = DateTimeOffset.FromUnixTimeMilliseconds(elements[1].GetInt64()),
-                Amount = elements[2].GetDecimal(),
+                Amount = Math.Abs(elements[2].GetDecimal()),
                 Price = elements[3].GetDecimal(),
-                Side = elements[2].GetDecimal() > 0 ? "buy" : "sell"
+                Side = elements[2].GetDecimal() > 0 ? "buy" : "sell",
+                Pair = _pair 
             };
         }
 
