@@ -5,11 +5,14 @@
              xmlns:s="clr-namespace:TradeBotMarket.Views.Pages"
              xmlns:k="clr-namespace:TradeBotMarket.ViewModels">
     <Application.Resources>
-        <DataTemplate DataType="{x:Type k:Page1ViewModel}">
-            <s:Page1/>
+        <DataTemplate DataType="{x:Type k:TradePageViewModel}">
+            <s:TradePage/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type k:Page2ViewModel}">
-            <s:Page2/>
+        <DataTemplate DataType="{x:Type k:CandleViewModel}">
+            <s:CandlePage/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type k:BalanceViewModel}">
+            <s:BalancePage/>
         </DataTemplate>
     </Application.Resources>
 </Application>

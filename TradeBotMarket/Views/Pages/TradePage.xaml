@@ -1,4 +1,4 @@
-﻿<Page x:Class="TradeBotMarket.Views.Pages.Page1"
+﻿<Page x:Class="TradeBotMarket.Views.Pages.TradePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,7 @@
       Title="Page1">
 
     <Page.DataContext>
-        <materials:Page1ViewModel/>
+        <materials:TradePageViewModel/>
     </Page.DataContext>
 
     <Grid>

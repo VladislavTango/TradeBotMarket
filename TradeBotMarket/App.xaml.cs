@@ -16,8 +16,9 @@ namespace TradeBotMarket
 
             var navigationService = new NavigationService();
 
-            navigationService.RegisterPage("Page1", () => new Page1());
-            navigationService.RegisterPage("Page2", () => new Page2());
+            navigationService.RegisterPage("TradePage", () => new TradePage());
+            navigationService.RegisterPage("CandlePage", () => new CandlePage());
+            navigationService.RegisterPage("BalancePage", () => new BalancePage());
 
             var mainViewModel = new MainWindowViewModel(navigationService);
 

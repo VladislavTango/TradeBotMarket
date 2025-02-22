@@ -9,45 +9,71 @@ namespace TradeBotMarket.ViewModels
     public class MainWindowViewModel : ViewModel
     {
         private string _Title = "TradeBotMarket";
-        public string Title
-        {
-            get => _Title;
-            set => Set(ref _Title, value);
-        }
+        public string Title { get => _Title; set => Set(ref _Title, value); }
 
         private readonly NavigationService _navigationService;
-
         private Page _currentPage;
-        public Page CurrentPage
+        public Page CurrentPage { get => _currentPage; set => Set(ref _currentPage, value); }
+
+        private Dictionary<string, bool> _buttonStates;
+        public Dictionary<string, bool> ButtonStates
         {
-            get => _currentPage;
-            set => Set(ref _currentPage, value);
+            get => _buttonStates;
+            set => Set(ref _buttonStates, value);
         }
 
         public MainWindowViewModel(NavigationService navigationService)
         {
             _navigationService = navigationService;
 
-            NavigateToPage1Command = new LambdaCommand(ExecuteNavigateToPage1, CanExecuteNavigate);
-            NavigateToPage2Command = new LambdaCommand(ExecuteNavigateToPage2, CanExecuteNavigate);
+            ButtonStates = new Dictionary<string, bool>
+            {
+                { "Trades", true },
+                { "Candles", false },
+                { "Balance", true }
+            };
 
-            _navigationService.NavigateTo("Page2");
+            NavigateToTradePageCommand = new LambdaCommand(ExecuteNavigateToTradePage, CanExecuteNavigate);
+            NavigateToCandlePageCommand = new LambdaCommand(ExecuteNavigateToCandlePage, CanExecuteNavigate);
+            NavigateToBalancePageCommand = new LambdaCommand(ExecuteNavigateToBalancePageCommand, CanExecuteNavigate);
+
+            _navigationService.NavigateTo("CandlePage");
             CurrentPage = _navigationService.CurrentPage;
         }
 
-        public ICommand NavigateToPage1Command { get; }
-        public ICommand NavigateToPage2Command { get; }
+        public ICommand NavigateToTradePageCommand { get; }
+        public ICommand NavigateToCandlePageCommand { get; }
+        public ICommand NavigateToBalancePageCommand { get; }
 
-        private void ExecuteNavigateToPage1(object parameter)
+        private void ExecuteNavigateToTradePage(object parameter)
         {
-            _navigationService.NavigateTo("Page1");
+            _navigationService.NavigateTo("TradePage");
             CurrentPage = _navigationService.CurrentPage;
+
+            UpdateButtonStates("Trades");
+        }
+        private void ExecuteNavigateToBalancePageCommand(object parameter)
+        {
+            _navigationService.NavigateTo("BalancePage");
+            CurrentPage = _navigationService.CurrentPage;
+
+            UpdateButtonStates("Balance");
+        }
+        private void ExecuteNavigateToCandlePage(object parameter)
+        {
+            _navigationService.NavigateTo("CandlePage");
+            CurrentPage = _navigationService.CurrentPage;
+
+            UpdateButtonStates("Candles");
         }
 
-        private void ExecuteNavigateToPage2(object parameter)
+        private void UpdateButtonStates(string buttonName)
         {
-            _navigationService.NavigateTo("Page2");
-            CurrentPage = _navigationService.CurrentPage;
+            foreach (var key in ButtonStates.Keys.ToList())
+            {
+                ButtonStates[key] = key != buttonName;
+            }
+            OnPropertyChanged(nameof(ButtonStates));
         }
 
         private bool CanExecuteNavigate(object parameter) => true;

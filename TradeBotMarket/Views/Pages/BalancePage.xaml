@@ -1,0 +1,33 @@
+﻿<Page x:Class="TradeBotMarket.Views.Pages.BalancePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TradeBotMarket.Views.Pages"
+      xmlns:materials="clr-namespace:TradeBotMarket.ViewModels"
+      mc:Ignorable="d" 
+      Title="BalancePage">
+    <Page.DataContext>
+        <materials:BalanceViewModel/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+            <DataGrid FontSize="15" ItemsSource="{Binding PortfolioBalances, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="1*" Header="Asset" Binding="{Binding Asset}" />
+                    <DataGridTextColumn Width="1*" Header="Balance" Binding="{Binding Balance}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        <DataGrid ItemsSource="{Binding CryptoBalances}" 
+          AutoGenerateColumns="False" Grid.Column="2" FontSize="15">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="1*" Header="Asset" Binding="{Binding Key}" />
+                <DataGridTextColumn Width="1*" Header="Balance" Binding="{Binding Value}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

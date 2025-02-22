@@ -59,14 +59,23 @@ namespace TradeBotMarket.Services
         }
 
 
-
-        public async Task<Ticker> GetTicker(string pair)
+        /// <summary>
+        /// у bitfinex не работало с DASH поэтому исспользовал binance
+        /// </summary>
+        public async Task<decimal> GetTicker(string pair)
         {
-            string url = pair.Length<6 ? $"https://api-pub.bitfinex.com/v2/ticker/t{pair}" : $"https://api-pub.bitfinex.com/v2/ticker/f{pair}";
-            var response = await _httpClient.GetStringAsync(url);
-            var rawTicker = JsonSerializer.Deserialize<List<object>>(response);
-            throw new NotImplementedException();
-            //return _mapper.Map<List<object>, Ticker>(rawTicker);
+            string url = $"https://api.binance.com/api/v3/ticker/price?symbol={pair}";
+            string response = await _httpClient.GetStringAsync(url);
+
+            JsonDocument doc = JsonDocument.Parse(response);
+            JsonElement root = doc.RootElement;
+
+            var priceElement = root.GetProperty("price");
+            string priceStr = priceElement.GetString();
+
+            decimal.TryParse(priceStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal price);
+
+            return price;
         }
 
         public void SubscribeCandles(string pair, int periodInSec, DateTimeOffset? from = null, DateTimeOffset? to = null, long? count = 0)

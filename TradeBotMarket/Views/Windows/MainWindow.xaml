@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:k ="clr-namespace:TradeBotMarket.ViewModels"
-        Title="{Binding Title}" Height="350" Width="525">
+        Title="{Binding Title}" Height="600px" Width="800px">
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -12,9 +12,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Page 1" Command="{Binding NavigateToPage1Command}" Margin="5"/>
-            <Button Grid.Column="1" Content="Page 2" Command="{Binding NavigateToPage2Command}" Margin="5"/>
+            <Button Grid.Column="0" IsEnabled="{Binding ButtonStates[Trades]}" Content="Trades" Command="{Binding NavigateToTradePageCommand}" Margin="5"/>
+            <Button Grid.Column="1" IsEnabled="{Binding ButtonStates[Candles]}" Content="Candles" Command="{Binding NavigateToCandlePageCommand}" Margin="5"/>
+            <Button Grid.Column="2" IsEnabled="{Binding ButtonStates[Balance]}" Content="Balance" Command="{Binding NavigateToBalancePageCommand}" Margin="5"/>
         </Grid>
         <Frame Grid.Row="1" NavigationUIVisibility="Hidden" Content="{Binding CurrentPage, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>

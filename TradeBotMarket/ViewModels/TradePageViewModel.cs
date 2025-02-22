@@ -6,15 +6,12 @@ using TradeBotMarket.ViewModels.Base;
 
 namespace TradeBotMarket.ViewModels
 {
-    public class Page1ViewModel : ViewModel
+    public class TradePageViewModel : ViewModel
     {
         private static readonly HttpClient _httpClient = new HttpClient();
-        private string _Title = "TradeBotMarket";
-        public string Title
-        {
-            get => _Title;
-            set => Set(ref _Title, value);
-        }
+        BitfinexService _bitfinexService = new(_httpClient);
+
+
         private string _pair = "BTCUSD";
         public string Pair
         {
@@ -29,8 +26,7 @@ namespace TradeBotMarket.ViewModels
             private set => Set(ref _Trades, value); 
         }
 
-
-        public Page1ViewModel()
+        public TradePageViewModel()
         {
            
             _ = FillTable(); 
@@ -38,7 +34,6 @@ namespace TradeBotMarket.ViewModels
 
         private async Task FillTable()
         {
-            BitfinexService _bitfinexService = new(_httpClient);
             Trades = new ObservableCollection<Trade>(await _bitfinexService.GetNewTradesAsync(_pair, 125));
         }
     }
