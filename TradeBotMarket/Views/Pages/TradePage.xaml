@@ -19,23 +19,28 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="6*" />
         </Grid.ColumnDefinitions>
-        <Expander Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Header="Pair">
-            <ListBox SelectedValue="{Binding Pair, Mode=TwoWay}" SelectedValuePath="Content">
-                <ListBoxItem Content="BTCUSD"></ListBoxItem>
-                <ListBoxItem Content="ETHUSD"></ListBoxItem>
-                <ListBoxItem Content="XRPUSD"></ListBoxItem>
-                <ListBoxItem Content="LTCUSD"></ListBoxItem>
-                <ListBoxItem Content="ETHBTC"></ListBoxItem>
-                <ListBoxItem Content="XRPBTC"></ListBoxItem>
-                <ListBoxItem Content="LTCBTC"></ListBoxItem>
-                <ListBoxItem Content="BTCUSD"></ListBoxItem>
-                <ListBoxItem Content="ETHUSD"></ListBoxItem>
-                <ListBoxItem Content="XRPUSD"></ListBoxItem>
-                <ListBoxItem Content="LTCUSD"></ListBoxItem>
-            </ListBox>
-        </Expander>
+        <StackPanel>
+            <Expander Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Header="Pair">
+                <ListBox SelectedValue="{Binding Pair, Mode=TwoWay}" SelectedValuePath="Content">
+                    <ListBoxItem Content="BTCUSD"></ListBoxItem>
+                    <ListBoxItem Content="ETHUSD"></ListBoxItem>
+                    <ListBoxItem Content="XRPUSD"></ListBoxItem>
+                    <ListBoxItem Content="LTCUSD"></ListBoxItem>
+                    <ListBoxItem Content="ETHBTC"></ListBoxItem>
+                    <ListBoxItem Content="XRPBTC"></ListBoxItem>
+                    <ListBoxItem Content="LTCBTC"></ListBoxItem>
+                    <ListBoxItem Content="BTCUSD"></ListBoxItem>
+                    <ListBoxItem Content="ETHUSD"></ListBoxItem>
+                    <ListBoxItem Content="XRPUSD"></ListBoxItem>
+                    <ListBoxItem Content="LTCUSD"></ListBoxItem>
+                </ListBox>
+            </Expander>
+            <Button Grid.Column="2" Content="Запустить веб Сокеты" Command="{Binding SubscribeToTrades}" Margin="5"/>
+            <Button Grid.Column="2" Content="Отключить веб Сокеты" Command="{Binding UnSubscribeToTrades}" Margin="5"/>
+        </StackPanel>
+
         <DataGrid Grid.Column="1" ItemsSource="{Binding Trades , UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="0" AutoGenerateColumns="False" HeadersVisibility="All">
-            <DataGrid.Columns > 
+            <DataGrid.Columns >
                 <DataGridTextColumn Width="1*" Header="Trade ID" Binding="{Binding Id}" />
                 <DataGridTextColumn Width="1*" Header="Pair" Binding="{Binding Pair}" />
                 <DataGridTextColumn Width="1*" Header="Price" Binding="{Binding Price}" />

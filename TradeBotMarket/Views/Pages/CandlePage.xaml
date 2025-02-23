@@ -55,7 +55,8 @@
                         <ListBoxItem Content="1M"></ListBoxItem>
                     </ListBox>
                 </Expander>
-
+                <Button Grid.Column="2" Content="Запустить веб Сокеты" Command="{Binding SubscribeCandles}" Margin="5"/>
+                <Button Grid.Column="2" Content="Отключить веб Сокеты" Command="{Binding UnsubscribeCandles}" Margin="5"/>
             </StackPanel>
         </Grid>
         <DataGrid Grid.Column="1" ItemsSource="{Binding Candles , UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" HeadersVisibility="All">
