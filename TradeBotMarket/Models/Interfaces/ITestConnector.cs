@@ -19,16 +19,21 @@
         #endregion
 
         #region Socket
-
+        /// <summary>
+        /// поменял все void на таски из-за того что всю работу с сокетами вынес в отдельный класс
+        /// (сделал так потому что не хотел 500 строчек в 1 файле)
+        /// еще поменял как и выше periodInSec(int) просто на period(string) потому-что api
+        /// всё-равно ест только строки да и писать что-то вроде switch(sec){case 60:"1m"} не хочется
+        /// </summary>
 
         event Action<Trade> NewBuyTrade;
         event Action<Trade> NewSellTrade;
-        void SubscribeTrades(string pair, int maxCount = 100);
-        void UnsubscribeTrades(string pair);
+        Task SubscribeTrades(string pair, int maxCount = 100);
+        Task UnsubscribeTrades(string pair);
 
         event Action<Candle> CandleSeriesProcessing;
-        void SubscribeCandles(string pair, int periodInSec, DateTimeOffset? from = null, DateTimeOffset? to = null, long? count = 0);
-        void UnsubscribeCandles(string pair);
+        Task SubscribeCandles(string pair, string period, DateTimeOffset? from = null, DateTimeOffset? to = null, long? count = 0);
+        Task UnsubscribeCandles(string pair);
 
         #endregion
 
