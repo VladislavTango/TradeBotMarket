@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBotMarket", "TradeBotMarket\TradeBotMarket.csproj", "{0C5AB14F-C5F6-4672-8182-A520DC95BDA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBotMarketLib", "TradeBotMarketLib\TradeBotMarketLib.csproj", "{F2C54313-61EB-4A22-B746-0F3ECE67E2AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0C5AB14F-C5F6-4672-8182-A520DC95BDA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C5AB14F-C5F6-4672-8182-A520DC95BDA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C5AB14F-C5F6-4672-8182-A520DC95BDA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C54313-61EB-4A22-B746-0F3ECE67E2AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C54313-61EB-4A22-B746-0F3ECE67E2AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C54313-61EB-4A22-B746-0F3ECE67E2AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C54313-61EB-4A22-B746-0F3ECE67E2AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
