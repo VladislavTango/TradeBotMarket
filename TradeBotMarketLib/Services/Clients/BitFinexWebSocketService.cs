@@ -10,8 +10,7 @@ public class BitFinexWebSocketService
     private readonly Uri _uri = new Uri("wss://api.bitfinex.com/ws/2");
     private readonly string _pair;
 
-    public event Action<Trade> NewBuyTrade;
-    public event Action<Trade> NewSellTrade;
+    public event Action<Trade> NewTrade;
 
     public event Action<Candle> NewCandle;
 
@@ -119,10 +118,7 @@ public class BitFinexWebSocketService
                 }
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка: {ex.Message}");
-        }
+        catch (Exception ex){ }
     }
 
     private void ProcessTradeData(JsonElement tradeData)
@@ -136,14 +132,7 @@ public class BitFinexWebSocketService
 
             var trade = JsonSerializer.Deserialize<Trade>(tradeData.GetRawText(), options);
 
-            if (trade.Side == "buy")
-            {
-                NewBuyTrade?.Invoke(trade);
-            }
-            else
-            {
-                NewSellTrade?.Invoke(trade);
-            }
+            NewTrade.Invoke(trade);
         }
     }
 

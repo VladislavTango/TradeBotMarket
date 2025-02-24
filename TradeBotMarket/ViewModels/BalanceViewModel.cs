@@ -3,16 +3,24 @@ using System.Net.Http;
 using TradeBotMarket.Models;
 using TradeBotMarket.Services;
 using TradeBotMarket.ViewModels.Base;
+using TradeBotMarketLib.Services.Clients;
+using TradeBotMarketLib.Services;
 
 namespace TradeBotMarket.ViewModels
 {
     public class BalanceViewModel : ViewModel
     {
-        private readonly static HttpClient _httpClient = new HttpClient();
-        private readonly BitfinexService _bitfinexService = new(_httpClient);
+        private readonly HttpClient _httpClient;
+        private readonly BitfinexRestService _restClient;
+        private readonly BitFinexWebSocketService _webSocketClient;
+        private readonly BitfinexConnector _bitfinexConnector;
 
         public BalanceViewModel()
         {
+            _httpClient = new HttpClient();
+            _restClient = new BitfinexRestService(_httpClient);
+            _webSocketClient = new BitFinexWebSocketService("");
+            _bitfinexConnector = new BitfinexConnector(_restClient, _webSocketClient);
             _ = CalculatePortfolioBalances();
         }
         public IEnumerable<KeyValuePair<string, decimal>> CryptoBalances => new Dictionary<string, decimal>
@@ -50,7 +58,7 @@ namespace TradeBotMarket.ViewModels
         {
             foreach (var balance in _cryptoBalances) 
             {
-                _portfolioBalances[0].Balance +=await _bitfinexService.GetTicker($"{balance.Key}USDT");
+                _portfolioBalances[0].Balance +=await _bitfinexConnector.GetTicker($"{balance.Key}USDT");
             }
             _portfolioBalances[0].Balance = Math.Round(_portfolioBalances[0].Balance, 3);
             foreach (var balance in _cryptoBalances)
@@ -62,7 +70,7 @@ namespace TradeBotMarket.ViewModels
         public async Task FromUSDTtoAny(string symbol) 
         {
             _portfolioBalances.FirstOrDefault(x => x.Asset == symbol).Balance =
-                Math.Round(_portfolioBalances[0].Balance / await _bitfinexService.GetTicker($"{symbol}USDT"),3);
+                Math.Round(_portfolioBalances[0].Balance / await _bitfinexConnector.GetTicker($"{symbol}USDT"),3);
         }
     }
 }

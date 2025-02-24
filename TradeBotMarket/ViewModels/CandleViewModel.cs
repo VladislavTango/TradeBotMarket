@@ -7,13 +7,17 @@ using TradeBotMarket.Infrastructure.Commands;
 using TradeBotMarket.Models;
 using TradeBotMarket.Services;
 using TradeBotMarket.ViewModels.Base;
+using TradeBotMarketLib.Services;
+using TradeBotMarketLib.Services.Clients;
 
 namespace TradeBotMarket.ViewModels
 {
     public class CandleViewModel : ViewModel
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
-        private readonly BitfinexService _bitfinexService = new(_httpClient);
+        private readonly HttpClient _httpClient;
+        private readonly BitfinexRestService _restClient;
+        private readonly BitFinexWebSocketService _webSocketClient;
+        private readonly BitfinexConnector _bitfinexConnector;
 
         private string _period = "1m";
         public string Period
@@ -70,6 +74,10 @@ namespace TradeBotMarket.ViewModels
 
         public CandleViewModel()
         {
+            _httpClient = new HttpClient();
+            _restClient = new BitfinexRestService(_httpClient);
+            _webSocketClient = new BitFinexWebSocketService(_pair);
+            _bitfinexConnector = new BitfinexConnector(_restClient, _webSocketClient);
             SubscribeCandles = new LambdaCommand(ExecuteSubscribeToCandles, CanExecute);
             UnsubscribeCandles = new LambdaCommand(ExecuteUnsubscribeFromCandles, CanExecute);
             _ = FillTable();
@@ -77,7 +85,7 @@ namespace TradeBotMarket.ViewModels
 
         private async Task FillTable()
         {
-            var candles = await _bitfinexService.GetCandleSeriesAsync(Pair, Period, From, To, 125);
+            var candles = await _bitfinexConnector.GetCandleSeriesAsync(Pair, Period, From, To, 125);
             Candles = new ObservableCollection<Candle>(candles);
         }
         public ICommand SubscribeCandles { get; }
@@ -85,10 +93,10 @@ namespace TradeBotMarket.ViewModels
 
         private void ExecuteSubscribeToCandles(object parameter)
         {
-            if (!_bitfinexService.IsSubscribed())
+            if (!_bitfinexConnector.IsSubscribed())
             {
-                _bitfinexService.CandleSeriesProcessing += AddCandle;
-                _ = _bitfinexService.SubscribeCandles(Pair, Period, From, To, 125);
+                _bitfinexConnector.NewCandle += AddCandle;
+                _ = _bitfinexConnector.SubscribeCandles(Pair, Period);
 
             }
             else
@@ -100,7 +108,7 @@ namespace TradeBotMarket.ViewModels
         }
         private void ExecuteUnsubscribeFromCandles(object parameter)
         {
-            _ = _bitfinexService.UnsubscribeCandles(Pair);
+            _ = _bitfinexConnector.Unsubscribe();
             MessageBox.Show("Вы отсоеденились от сокета");
         }
         private bool CanExecute(object parameter) => true;

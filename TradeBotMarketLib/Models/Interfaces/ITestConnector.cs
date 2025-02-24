@@ -26,15 +26,18 @@
         /// всё-равно ест только строки да и писать что-то вроде switch(sec){case 60:"1m"} не хочется
         /// </summary>
 
-        event Action<Trade> NewBuyTrade;
-        event Action<Trade> NewSellTrade;
-        Task SubscribeTrades(string pair, int maxCount = 100);
-        Task UnsubscribeTrades(string pair);
+        event Action<Trade> NewTrade;
+        /// <summary>
+        /// когда я подключаюсь к сокету трейда у него нет разделения на buy и sell 
+        /// там просто приходит te , tu ,а дальше я разбираюсь что это 
+        /// поэтому 2 евента тут не нужно , хотя если у других апи
+        /// есть разделение то второй евент бы не помешал
+        /// </summary>
+        Task SubscribeTrades(string pair);
+        Task Unsubscribe();
 
-        event Action<Candle> CandleSeriesProcessing;
-        Task SubscribeCandles(string pair, string period, DateTimeOffset? from = null, DateTimeOffset? to = null, long? count = 0);
-        Task UnsubscribeCandles(string pair);
-
+        event Action<Candle> NewCandle;
+        Task SubscribeCandles(string pair, string period);
         #endregion
 
     }

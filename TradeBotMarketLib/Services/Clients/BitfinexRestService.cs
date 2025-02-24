@@ -1,25 +1,18 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using TradeBotMarket.Infrastructure.Converters;
 using TradeBotMarket.Models;
-using TradeBotMarket.Models.Interfaces;
 
-namespace TradeBotMarket.Services
+namespace TradeBotMarketLib.Services.Clients
 {
-    public class BitfinexService : ITestConnector
+    public class BitfinexRestService
     {
         private readonly HttpClient _httpClient;
-        private BitFinexWebSocketService _webSocketService;
-        public BitfinexService(HttpClient httpClient)
+        public BitfinexRestService(HttpClient httpClient) 
         {
             _httpClient = httpClient;
         }
-
-
-        public event Action<Trade> NewBuyTrade;
-        public event Action<Trade> NewSellTrade;
-        public event Action<Candle> CandleSeriesProcessing;
-        #region REST
         public async Task<IEnumerable<Candle>> GetCandleSeriesAsync(string pair, string period, DateTimeOffset? from, DateTimeOffset? to = null, long? count = 0)
         {
             var start = from != null ? $"start={from.Value.ToUnixTimeMilliseconds()}" : "";
@@ -74,50 +67,5 @@ namespace TradeBotMarket.Services
 
             return price;
         }
-        #endregion
-        #region SOCKETS
-        public async Task SubscribeCandles(string pair, string period, DateTimeOffset? from = null, DateTimeOffset? to = null, long? count = 125)
-        {
-            _webSocketService = new BitFinexWebSocketService(pair);
-            await _webSocketService.ConnectAsync();
-            await _webSocketService.SubscribeToCandlesAsync(pair, period);
-
-            _webSocketService.NewCandle += candle => CandleSeriesProcessing?.Invoke(candle);
-        }
-
-
-        public async Task UnsubscribeCandles(string pair)
-        {
-            if (_webSocketService != null)
-            {
-                await _webSocketService.UnsubscribeAsync();
-                _webSocketService.NewCandle -= CandleSeriesProcessing;
-                CandleSeriesProcessing = null;
-            }
-        }
-
-        public async Task SubscribeTrades(string pair, int maxCount = 100)
-        {
-            _webSocketService = new BitFinexWebSocketService(pair);
-
-            _webSocketService.NewBuyTrade += trade => NewBuyTrade.Invoke(trade);
-            _webSocketService.NewSellTrade += trade => NewSellTrade.Invoke(trade);
-
-            await _webSocketService.ConnectAsync();
-            await _webSocketService.SubscribeToTradesAsync(pair);
-        }
-
-        public async Task UnsubscribeTrades(string pair)
-        {
-            if (_webSocketService != null)
-            {
-                await _webSocketService.UnsubscribeAsync();
-            }
-        }
-        public bool IsSubscribed()
-        {
-            return _webSocketService != null && _webSocketService.IsSubscribed();
-        }
-        #endregion
     }
 }

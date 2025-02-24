@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 using TradeBotMarket.Services;
 using TradeBotMarket.ViewModels;
 using TradeBotMarket.Views.Pages;
@@ -26,5 +27,4 @@ namespace TradeBotMarket
             mainWindow.Show();
         }
     }
-
 }

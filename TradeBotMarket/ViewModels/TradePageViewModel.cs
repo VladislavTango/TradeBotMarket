@@ -4,15 +4,18 @@ using System.Windows;
 using System.Windows.Input;
 using TradeBotMarket.Infrastructure.Commands;
 using TradeBotMarket.Models;
-using TradeBotMarket.Services;
 using TradeBotMarket.ViewModels.Base;
+using TradeBotMarketLib.Services;
+using TradeBotMarketLib.Services.Clients;
 
 namespace TradeBotMarket.ViewModels
 {
     public class TradePageViewModel : ViewModel
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
-        BitfinexService _bitfinexService = new(_httpClient);
+        private readonly HttpClient _httpClient;
+        private readonly BitfinexRestService _restClient;
+        private readonly BitFinexWebSocketService _webSocketClient;
+        private readonly BitfinexConnector _bitfinexConnector;
 
         private string _pair = "BTCUSD";
         public string Pair
@@ -22,22 +25,26 @@ namespace TradeBotMarket.ViewModels
             {
                 Set(ref _pair, value);
                 _ = FillTable();
-                if (_bitfinexService.IsSubscribed())
+                if (_bitfinexConnector.IsSubscribed())
                 {
-                    ExecuteUnsubscribeFromTrades(1);
+                    ExecuteUnsubscribeFromTrades(null);
                 }
             }
         }
 
-        private ObservableCollection<Trade> _Trades = new();
+        private ObservableCollection<Trade> _trades = new();
         public ObservableCollection<Trade> Trades
         {
-            get => _Trades;
-            private set => Set(ref _Trades, value);
+            get => _trades;
+            private set => Set(ref _trades, value);
         }
 
         public TradePageViewModel()
         {
+            _httpClient = new HttpClient();
+            _restClient = new BitfinexRestService(_httpClient);
+            _webSocketClient = new BitFinexWebSocketService(_pair);
+            _bitfinexConnector = new BitfinexConnector(_restClient, _webSocketClient);
             SubscribeToTrades = new LambdaCommand(ExecuteSubscribeToTrades, CanExecute);
             UnSubscribeToTrades = new LambdaCommand(ExecuteUnsubscribeFromTrades, CanExecute);
             _ = FillTable();
@@ -48,32 +55,31 @@ namespace TradeBotMarket.ViewModels
 
         private void ExecuteSubscribeToTrades(object parameter)
         {
-            if (_bitfinexService.IsSubscribed())
+            if (_bitfinexConnector.IsSubscribed())
             {
                 MessageBox.Show("Сначала отпишитесь от других сокетов");
             }
             else
             {
-                _bitfinexService.NewBuyTrade += OnNewTrade;
-                _bitfinexService.NewSellTrade += OnNewTrade;
-
-                _ = _bitfinexService.SubscribeTrades($"t{_pair}");
+                _bitfinexConnector.NewTrade += OnNewTrade;
+                _ = _bitfinexConnector.SubscribeTrades(_pair);
             }
         }
-        private void ExecuteUnsubscribeFromTrades(object parameter)
+
+        private async void ExecuteUnsubscribeFromTrades(object parameter)
         {
-            _ = _bitfinexService.UnsubscribeTrades($"t{_pair}");
-            MessageBox.Show("Вы отсоеденились от сокета");
+            await _bitfinexConnector.Unsubscribe();
+            MessageBox.Show("Вы отсоединились от сокета");
         }
+
         private void OnNewTrade(Trade trade)
         {
-            trade.Pair = trade.Pair.Remove(0, 1);
             Trades.Insert(0, trade);
         }
 
         private async Task FillTable()
         {
-            Trades = new ObservableCollection<Trade>(await _bitfinexService.GetNewTradesAsync(_pair, 125));
+            Trades = new ObservableCollection<Trade>(await _bitfinexConnector.GetNewTradesAsync(_pair, 125));
         }
 
         private bool CanExecute(object parameter) => true;
